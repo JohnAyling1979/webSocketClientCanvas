@@ -1,0 +1,15 @@
+canvas {
+	border: 1px solid black;
+}
+
+.flex-container {
+	display: flex;
+}
+
+.content {
+	width: 75%;
+}
+
+.sidebar {
+	width: 25%;
+}
