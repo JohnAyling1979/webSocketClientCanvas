@@ -3,7 +3,7 @@ var canvas = document.getElementById('tutorial');
 var playerName = document.getElementById('name');
 var playerList = document.getElementById('player-list');
 
-var socket = new WebSocket('ws://localhost:9080')
+var socket = new WebSocket('wss://protected-spire-67513.herokuapp.com/')
 var otherPlayers = [];
 
 function Player() {
