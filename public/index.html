@@ -7,10 +7,12 @@
 		<div class="content">
 			<canvas id="tutorial" width="800" height="600">This is the canvas element</canvas>
 			<div id='error'></div>
-			<div>W,A,S,D to move</div>
+			<div>W,A,S,D to move, space to fire</div>
 		</div>
 		<div class="sidebar">
-			<label>Name: </label><input id="name" />
+			<ul>
+				<li>Your Score <span id="score">0</span></li>
+			</ul>
 			<ul id="player-list">
 
 			</ul>
@@ -23,6 +25,8 @@
 	<script src="/__/firebase/8.6.7/firebase-analytics.js"></script>
 	<!-- Initialize Firebase -->
 	<script src="/__/firebase/init.js"></script>
+	<script src="bullet.js"></script>
+	<script src="player.js"></script>
 	<script src="index.js"></script>
 </body>
 </html>

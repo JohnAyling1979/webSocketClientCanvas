@@ -1,65 +1,10 @@
 var error = document.getElementById('error');
 var canvas = document.getElementById('tutorial');
-var playerName = document.getElementById('name');
+var playerScore = document.getElementById('score');
 var playerList = document.getElementById('player-list');
 
 var socket = new WebSocket('wss://protected-spire-67513.herokuapp.com/')
 var otherPlayers = [];
-
-function Player() {
-	var x = 0
-	var y = 0;
-	var speed = 10;
-	var color = 'rgb(200, 0, 0)'
-	var key = null;
-
-	function draw() {
-		switch (key) {
-			case 'w':
-				y -= speed;
-				if (y < 0) y = 0;
-			break;
-			case 'a':
-				x -= speed;
-				if (x < 0) x = 0;
-			break;
-			case 's':
-				y += speed;
-				if (y > canvas.height - 50) y = canvas.height - 50;
-			break;
-			case 'd':
-				x += speed;
-				if (x > canvas.width - 50) x = canvas.width - 50;
-			break;
-		}
-
-		ctx.fillStyle = color;
-		ctx.fillRect(x, y, 50, 50);
-	}
-
-	function getX() {
-		return x;
-	}
-
-	function getY() {
-		return y;
-	}
-
-	window.addEventListener('keypress', function (e) {
-		key = e.key
-	});
-
-	window.addEventListener('keyup', function (e) {
-		key = null;
-	});
-
-	return {
-		draw,
-		getX,
-		getY
-	}
-}
-
 
 if (canvas.getContext('2d')) {
 	var ctx = canvas.getContext('2d');
@@ -85,26 +30,44 @@ if (canvas.getContext('2d')) {
 	});
 
 	setInterval(function() {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		if (!player.isDead()) {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-		player.draw();
+			player.draw();
 
-		playerListHtml = '';
+			playerListHtml = '';
+			otherPlayers.forEach((other, index) => {
+				ctx.fillStyle = 'rgb(0, 0, 200)';
+				ctx.fillRect(other.x, other.y, 50, 50);
+				playerListHtml += '<li>Oponent #' + (index + 1) + ' score ' + other.score + '</li>';
 
-		otherPlayers.forEach((other) => {
-			ctx.fillStyle = 'rgb(0, 0, 200)';
-			ctx.fillRect(other.x, other.y, 50, 50);
-			playerListHtml += '<li>' + other.name + '</li>';
-		});
+				if (other.bullet) {
+					ctx.beginPath();
+					ctx.arc(other.bullet.x, other.bullet.y, 2, 0, 2 * Math.PI, false);
+					ctx.fill();
 
-		playerList.innerHTML = playerListHtml;
+					player.collistionCheck(other.bullet.x, other.bullet.y);
+				}
+			});
 
-		if (socket.readyState === 1) {
-			socket.send(JSON.stringify({
-				x: player.getX(),
-				y: player.getY(),
-				name: playerName.value
-			}));
+			playerList.innerHTML = playerListHtml;
+			playerScore.innerHTML = player.getScore()
+
+			if (socket.readyState === 1) {
+					socket.send(JSON.stringify({
+						x: player.getX(),
+						y: player.getY(),
+						bullet: player.getBullet(),
+						score: player.getScore()
+					}));
+			}
+		} else {
+			socket.close();
+
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			ctx.font = "30px Arial";
+			ctx.fillText("Game Over", 10, 50);
 		}
 	}, 16);
 } else {
