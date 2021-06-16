@@ -66,8 +66,8 @@ if (canvas.getContext('2d')) {
 
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-			ctx.font = "30px Arial";
-			ctx.fillText("Game Over", 10, 50);
+			ctx.font = "50px Arial";
+			ctx.fillText("Game Over", canvas.width / 2 - 150, canvas.height / 2);
 		}
 	}, 16);
 } else {
